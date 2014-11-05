@@ -447,11 +447,14 @@ abstract class Field extends Widget
         if (is_object($this->model) && isset($this->db_name)) {
 
             if (
-                !Schema::hasColumn($this->model->getTable(), $this->db_name)
+                !(Schema::connection($this->model->getConnectionName())->hasColumn($this->model->getTable(), $this->db_name)
+                || $this->model->hasSetMutator($this->db_name))
                 || is_a($this->relation, 'Illuminate\Database\Eloquent\Relations\HasOne')
                 ) {
-                $this->model->saved(function () {
-                    $this->updateRelations();
+                
+                $self = $this; //fix old 5.3 you can't pass this in a closure
+                $this->model->saved(function () use($self) {
+                    $self->updateRelations();
                 });
 
                 //check for relation then exit
@@ -587,6 +590,14 @@ abstract class Field extends Widget
         }
     }
 
+    public function has_error($error='class="has-error"')
+    {
+        if ($this->has_error) {
+            return $error;
+        }
+        return '';
+    }
+    
     public function all()
     {
         $output  = "<label for=\"{$this->name}\" class=\"{$this->req}\">{$this->label}</label>";
