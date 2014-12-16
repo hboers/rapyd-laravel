@@ -139,8 +139,11 @@ class Image extends File
             case "modify":
                 if ($this->old_value != "") {
                     $output .= '<div class="clearfix">';
-                    $output .= $this->thumb()." &nbsp;".link_to($this->web_path.$this->value, $this->value, array('target'=>'_blank'))."<br />\n";
-                    $output .= Form::checkbox($this->name.'_remove', 1, (bool) Input::get($this->name.'_remove'))." ".trans('rapyd::rapyd.delete')." <br/>\n";
+                    $output .= $this->thumb();
+                    // to much simplification. If needed implement delete and link
+                    //$output .= " &nbsp;".link_to($this->web_path.$this->value, $this->value, array('target'=>'_blank'))."<br />\n";
+                    //$output .= Form::checkbox($this->name.'_remove', 1, (bool) Input::get($this->name.'_remove'))." ".trans('rapyd::rapyd.delete')." <br/>\n";
+                    
                     $output .= '</div>';
                 }
                 $output .= Form::file($this->name, $this->attributes);
