@@ -12,6 +12,7 @@ class Image extends File {
     public $rule = "mimes:jpeg,png";
     protected $image;
     protected $image_callable;
+    protected $crop = array();
     protected $resize = array();
     protected $fit = array();
     protected $preview = array(120, 80);
@@ -39,10 +40,10 @@ class Image extends File {
                 $this->path = $this->parseString($this->path);
                 $filename = $this->parseString($filename);
                 $filename = $this->sanitizeFilename($filename);
-                
+
                 // Unique Filename
                 $filename = \HBoers\Util::uniFile($this->path, $filename);
-                
+
                 $this->new_value = $filename;
 
                 if ($this->uploadFile($filename)) {
@@ -100,6 +101,19 @@ class Image extends File {
     }
 
     /**
+     * shortcut to ImageManager crop
+     * @param $width
+     * @param $height
+     * @param $filename
+     * @return $this
+     */
+    public function crop($width, $height, $filename = null) {
+        $this->fit[] = array('width' => $width, 'height' => $height, 'filename' => $filename);
+
+        return $this;
+    }
+
+    /**
      * change the preview thumb size
      * @param $width
      * @param $height
@@ -123,6 +137,13 @@ class Image extends File {
             if ($this->image_callable) {
                 $callable = $this->image_callable;
                 $callable($this->image);
+            }
+
+            if (count($this->crop)) {
+                foreach ($this->crop as $crop) {
+                    $this->image->crop($resize["width"], $resize["height"]);
+                    $this->image->save($resize["filename"]);
+                }
             }
 
             if (count($this->resize)) {
