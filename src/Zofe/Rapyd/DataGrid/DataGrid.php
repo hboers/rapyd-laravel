@@ -96,7 +96,7 @@ class DataGrid extends DataSet
         } else {
 
             $headers  = array(
-                'Content-Type' => 'text/csv',
+                'Content-Type' => 'text/csv; charset=utf-8',
                 'Pragma'=>'no-cache',
                 '"Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
                 'Content-Disposition' => 'attachment; filename="' . $filename.'"');
